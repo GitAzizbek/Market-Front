@@ -1,0 +1,848 @@
+@import url(https://fonts.googleapis.com/css?family=Poppins:100,100italic,200,200italic,300,300italic,regular,italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic);
+
+* {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  text-decoration: none;
+  box-sizing: border-box;
+  font-family: "Poppins";
+}
+
+.bottom-navbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #fff;
+  padding: 5px 0;
+  z-index: 1000;
+  border-top: 0.5px solid #e1e1e1;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.nav-icon {
+  font-size: 1.2rem;
+  /* margin-bottom: 5px; */
+}
+
+.nav-text {
+  font-size: 0.8rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.nav-item:hover .nav-icon,
+.nav-item:hover .nav-text {
+  color: #007bff;
+}
+
+.App {
+  text-align: center;
+  padding-bottom: 70px;
+}
+
+.home {
+  padding: 0 20px 20px 20px;
+}
+.search-container {
+  display: flex;
+  align-items: center;
+  /* justify-content: space-between; */
+  gap: 5px;
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding-top: 20px;
+  padding-bottom: 10px;
+  z-index: 999;
+  background-color: white;
+}
+
+.heart {
+  font-size: 28px;
+  color: #747474;
+  cursor: pointer;
+}
+.search_box {
+  width: 95%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 8px;
+  background-color: #acacac50;
+  padding: 0 5px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px;
+  font-size: 1rem;
+  outline: none;
+  background-color: transparent;
+  border: none;
+}
+
+.search-container .search {
+  font-size: 21px;
+  color: #9b9b9b;
+}
+.content {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.banner_img {
+  width: 100%;
+}
+
+.Announce {
+  margin-top: 20px;
+}
+
+.Categories {
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow-x: auto; /* Enables horizontal scrolling */
+  white-space: nowrap; /* Prevents wrapping */
+  scrollbar-width: thin; /* Firefox uchun ingichka scrollbar */
+  scrollbar-color: #ccc transparent; /* Firefox uchun scrollbar ranglari */
+  padding: 10px;
+}
+
+/* Chrome, Edge va Safari uchun scrollbar */
+.Categories::-webkit-scrollbar {
+  height: 6px; /* Scrollbar balandligi */
+}
+
+.Categories::-webkit-scrollbar-track {
+  background: transparent; /* Scrollbar tag fon */
+  margin: 5px 0;
+}
+
+.Categories::-webkit-scrollbar-thumb {
+  background: #bbb;
+  border-radius: 10px;
+}
+
+.Categories::-webkit-scrollbar-thumb:hover {
+  background: #999; /* Hoverda rang o'zgaradi */
+}
+
+.Categories button {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 120px;
+  background-color: #fff;
+  border: 2px solid #ddd;
+  padding: 4px 10px;
+  font-size: 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #333;
+}
+
+.Categories button:hover {
+  background-color: #f5f5f5;
+  border-color: #aaa;
+}
+
+button.active {
+  background-color: #0400ff;
+  color: #fff;
+  border-color: #0400ff;
+  box-shadow: 0 4px 10px rgba(4, 0, 255, 0.3);
+}
+
+.Products {
+  margin-top: 10px;
+  padding: 10px;
+}
+
+.products_top {
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.products_bottom {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 20px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.card_top {
+  background: #f9f9f9;
+  position: relative;
+}
+
+.img_box {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+.product_title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #141414;
+  margin-bottom: 10px;
+}
+.img_box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.card {
+  text-align: left;
+}
+.card_bottom {
+  padding: 15px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card_title {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.card_price {
+  font-size: 12px;
+  color: lime;
+  margin-bottom: 8px;
+  margin-top: 5px;
+}
+
+.card_description {
+  font-size: 14px;
+  color: #666;
+  flex-grow: 1; /* Pushes description to the bottom */
+}
+
+/* Asosiy konteyner */
+.detail-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+/* Rasm qismi */
+.detail-images-container {
+  flex: 1 1 50%;
+  max-width: 600px;
+}
+
+/* Karusel stil */
+.mySwipper {
+  width: 100%;
+  height: 400px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.detail-thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Ma'lumotlar qismi */
+.detail-info-container {
+  flex: 1 1 40%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.detail-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.detail-description {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+.detail-price {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #e67e22;
+}
+
+.detail-category {
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Rang va o'lcham tanlash */
+.detail-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.color-options,
+.size-options {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.color-button,
+.size-button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.color-button.active,
+.size-button.active {
+  background-color: #e67e22;
+  color: #fff;
+  border-color: #e67e22;
+}
+
+.color-button:hover,
+.size-button:hover {
+  background-color: #ddd;
+}
+
+/* Miqdor boshqaruvi */
+.quantity-control {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.quantity-button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.quantity-button:hover {
+  background-color: #ddd;
+}
+
+.quantity-value {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+/* Savatga qo'shish tugmasi */
+.detail-buy-button {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  background-color: #0400ff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.detail-buy-button:hover {
+  background-color: #d35400;
+}
+
+/* Yuklanayotgan payt */
+.detail-loading {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #555;
+  margin-top: 2rem;
+}
+
+/* Responsive dizayn */
+@media (max-width: 768px) {
+  .detail-container {
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .detail-images-container {
+    max-width: 100%;
+  }
+
+  .mySwipper {
+    height: 300px;
+  }
+
+  .detail-info-container {
+    flex: 1 1 100%;
+  }
+
+  .detail-title {
+    font-size: 1.5rem;
+  }
+
+  .detail-price {
+    font-size: 1.25rem;
+  }
+
+  .detail-buy-button {
+    width: 100%;
+    padding: 0.75rem;
+  }
+}
+
+/* Cart Container */
+.cart-container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 10px;
+  font-family: "Arial", sans-serif;
+}
+
+/* Cart Header */
+.cart-container h1 {
+  font-size: 20px;
+  color: #555;
+  text-align: left;
+  margin-bottom: 5px;
+}
+
+/* Empty Cart Message */
+.cart-container p {
+  text-align: center;
+  font-size: 1rem;
+  color: #666;
+}
+
+/* Cart Items List */
+.cart-items {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Individual Cart Item */
+.cart-item {
+  display: flex;
+  gap: 10px;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cart_item_left {
+  width: 40%;
+}
+.cart_item_right {
+  width: 60%;
+}
+/* Cart Item Image */
+.cart-item-image {
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.cart-item-details h3 {
+  font-size: 14px;
+  color: #747474;
+  margin-bottom: 5px;
+  text-align: left;
+}
+
+.cart-item-details p {
+  font-size: 10px;
+  color: #666;
+  margin: 3px 0;
+  text-align: left;
+}
+
+/* Quantity Control */
+.quantity-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* margin-top: 8px; */
+}
+
+.quantity-button {
+  padding: 3px 6px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+.quantity-button:hover {
+  background-color: #e0e0e0;
+}
+
+.quantity-value {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Remove Button */
+.remove-button {
+  padding: 3px 6px;
+  border: none;
+  border-radius: 4px;
+  background-color: #ff4d4d;
+  color: white;
+  cursor: pointer;
+  font-size: 10px;
+  transition: background-color 0.2s ease;
+}
+
+.remove-button:hover {
+  background-color: #ff1a1a;
+}
+
+/* Cart Summary */
+.cart-summary {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* .cart-summary h2 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 15px;
+} */
+
+/* Checkout Button */
+.checkout-button {
+  padding: 4px 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  font-size: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.checkout-button:hover {
+  background-color: #0056b3;
+}
+
+.cart-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.cart-summary h2 {
+  font-size: 14px;
+  color: #d35400;
+}
+
+.cart_box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.clear button {
+  padding: 4px 10px;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 12px;
+  border: none;
+  border-radius: 8px;
+}
+
+.empty {
+  text-align: center;
+  margin-top: 100px;
+}
+
+.empty img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+}
+
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: 60px;
+  aspect-ratio: 4;
+  --_g: no-repeat radial-gradient(circle closest-side, #000 90%, #0000);
+  background: var(--_g) 0% 50%, var(--_g) 50% 50%, var(--_g) 100% 50%;
+  background-size: calc(100% / 3) 100%;
+  animation: l7 1s infinite linear;
+}
+@keyframes l7 {
+  33% {
+    background-size: calc(100% / 3) 0%, calc(100% / 3) 100%, calc(100% / 3) 100%;
+  }
+  50% {
+    background-size: calc(100% / 3) 100%, calc(100% / 3) 0%, calc(100% / 3) 100%;
+  }
+  66% {
+    background-size: calc(100% / 3) 100%, calc(100% / 3) 100%, calc(100% / 3) 0%;
+  }
+}
+
+.loading {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: white;
+  z-index: 9999999999999;
+  display: none;
+}
+.loading_box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+.loading.active {
+  display: block;
+}
+
+body {
+  margin: 0;
+}
+
+.loading_container {
+  /* height: 100vh; */
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 10px;
+}
+
+.avatar {
+  float: left;
+  width: 100%;
+  height: 100px;
+  background-color: #ccc;
+  border-radius: 8px;
+  background-image: linear-gradient(90deg, #ddd 0px, #e8e8e8 40px, #ddd 80px);
+  background-size: 600px;
+  animation: shine-avatar 1.6s infinite linear;
+}
+
+.line {
+  float: left;
+  width: 140px;
+  height: 16px;
+  margin-top: 12px;
+  border-radius: 7px;
+  background-image: linear-gradient(90deg, #ddd 0px, #e8e8e8 40px, #ddd 80px);
+  background-size: 600px;
+  animation: shine-lines 1.6s infinite linear;
+}
+
+.avatar + .line {
+  margin-top: 11px;
+  width: 100px;
+}
+
+.line ~ .line {
+  background-color: #ddd;
+}
+
+@keyframes shine-lines {
+  0% {
+    background-position: -100px;
+  }
+  40%,
+  100% {
+    background-position: 140px;
+  }
+}
+
+@keyframes shine-avatar {
+  0% {
+    background-position: -100px + 68px;
+  }
+  40%,
+  100% {
+    background-position: 140px + 68px;
+  }
+}
+.loading_container.active {
+  display: none;
+}
+
+/* Asosiy Konteyner */
+.payment-container {
+  text-align: left;
+  max-width: 500px;
+  padding: 20px;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+/* Sarlavha */
+.payment-container h1 {
+  text-align: left;
+  color: #333;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+/* Karta Stili */
+.payment-container .card {
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  border-radius: 12px;
+  color: white;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.payment-container .card-header h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.payment-container .card-body {
+  margin-top: 15px;
+}
+
+.payment-container .card-body p {
+  margin: 5px 0;
+  font-weight: 600;
+  font-family: monospace;
+  font-size: 1.1rem;
+}
+
+/* Forma Gruhlari */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+.form-group select,
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease;
+}
+
+.form-group select:focus,
+.form-group input:focus {
+  border-color: #6a11cb;
+  outline: none;
+}
+
+/* Karta Formasi */
+.card-form {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.card-form h3 {
+  margin-top: 0;
+  color: #fff;
+  padding: 3px;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 11px;
+  background-color: green;
+}
+
+.card-form .form-group input {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-form .form-group input:focus {
+  border-color: #6a11cb;
+  box-shadow: 0 0 8px rgba(106, 17, 203, 0.3);
+}
+
+.payment_form {
+  margin-top: 10px;
+}
+/* Tasdiqlash Tugmasi */
+.confirm-button {
+  width: 100%;
+  padding: 14px;
+  background-color: #6a11cb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.confirm-button:hover {
+  background-color: #2575fc;
+}
+
+/* Fayl Yuklash */
+.form-group input[type="file"] {
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  width: 100%;
+}

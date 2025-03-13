@@ -1,0 +1,192 @@
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Scrollbar } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/scrollbar";
+import { ToastContainer, toast } from "react-toastify";
+
+function ProductDetail() {
+  const notify = () => toast.warning("Iltimos rang va o'lcham tanlang");
+  const success = () =>
+    toast.success("Maxsulot muvaffaqqiyatli savatga qo'shildi");
+
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const [product, setProduct] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [cartItems, setCartItems] = useState([]);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}/api/main/products/${id}/`);
+        setProduct(response.data.data);
+        if (response.data.data.colors.length > 0) {
+          setSelectedColor(response.data.data.colors[0].color.name);
+        }
+      } catch (error) {
+        console.error("Mahsulot yuklashda xatolik:", error);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
+
+  useEffect(() => {
+    setSelectedSize(null);
+  }, [selectedColor]);
+
+  const getSelectedVariant = () => {
+    if (!selectedColor || !selectedSize || !product) return null;
+    return product.colors.find(
+      (color) =>
+        color.color.name === selectedColor && color.size.size === selectedSize
+    );
+  };
+
+  const handleAddToCart = () => {
+    const selectedVariant = getSelectedVariant();
+    if (!selectedVariant) {
+      notify();
+      return;
+    }
+
+    const newItem = {
+      id: selectedVariant.id,
+      productId: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.images[0]?.image || "",
+      color: selectedColor,
+      size: selectedSize,
+      quantity: quantity,
+    };
+
+    const existingCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+    const updatedCart = existingCart.some((item) => item.id === newItem.id)
+      ? existingCart.map((item) =>
+          item.id === newItem.id
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        )
+      : [...existingCart, newItem];
+
+    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+    success();
+  };
+
+  const goToCart = () => {
+    navigate("/cart", { state: { cartItems } }); // Navigate to cart with cart items
+  };
+
+  if (!product) {
+    return <p className="detail-loading">Yuklanmoqda...</p>;
+  }
+
+  return (
+    <div className="detail-container">
+      <ToastContainer />
+      {/* Chap taraf - Rasmlar */}
+      <div className="detail-images-container">
+        <Swiper
+          scrollbar={{ hide: false }}
+          modules={[Scrollbar]}
+          className="mySwipper"
+        >
+          {product.images.map((image) => (
+            <SwiperSlide key={image.id}>
+              <img
+                src={`${apiUrl}/${image.image}`}
+                alt={product.name}
+                className="detail-thumbnail"
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
+
+      <div className="detail-info-container">
+        <h2 className="detail-title">{product.name}</h2>
+        <p className="detail-description">{product.description}</p>
+        <p className="detail-price">
+          {parseInt(product.price).toLocaleString()} UZS
+        </p>
+        <p className="detail-category">
+          Kategoriya:{" "}
+          <strong>{product.category?.[0]?.name || "Noma'lum"}</strong>
+        </p>
+
+        <div className="detail-options">
+          <h3>Rangni tanlang:</h3>
+          <div className="color-options">
+            {product.colors.map((color) => (
+              <button
+                key={color.id}
+                className={`color-button ${
+                  selectedColor === color.color.name ? "active" : ""
+                }`}
+                onClick={() => setSelectedColor(color.color.name)}
+              >
+                {color.color.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* O'lchamni tanlash */}
+        <div className="detail-options">
+          <h3>O'lchamni tanlang:</h3>
+          <div className="size-options">
+            {product.colors.map((color) => {
+              const isSizeForSelectedColor = color.color.name === selectedColor;
+              return (
+                <button
+                  key={color.size.id}
+                  className={`size-button ${
+                    selectedSize === color.size.size ? "active" : ""
+                  }`}
+                  onClick={() => setSelectedSize(color.size.size)}
+                  disabled={!isSizeForSelectedColor}
+                >
+                  {color.size.size}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Miqdor */}
+        <div className="detail-options">
+          <h3>Miqdor:</h3>
+          <div className="quantity-control">
+            <button
+              className="quantity-button"
+              onClick={() => setQuantity((prev) => (prev > 1 ? prev - 1 : 1))}
+            >
+              -
+            </button>
+            <span className="quantity-value">{quantity}</span>
+            <button
+              className="quantity-button"
+              onClick={() => setQuantity((prev) => prev + 1)}
+            >
+              +
+            </button>
+          </div>
+        </div>
+
+        {/* Savatga qo'shish tugmasi */}
+        <button className="detail-buy-button" onClick={handleAddToCart}>
+          Savatga qo'shish
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default ProductDetail;
