@@ -1,21 +1,27 @@
-import React, { use, useState } from "react";
+import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import Announcements from "./Announcements";
 import Categories from "./Categories";
 import Products from "./Products";
-import { ToastContainer, toast } from "react-toastify";
 
 const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const token = queryParams.get("token");
+
+  if (token) {
+    localStorage.setItem("token", token);
+  }
+
+  const handleSearchClick = () => {
+    navigate(`/catalog`);
+  };
 
   return (
     <div className="home">
-      {/* <div className={loading == true ? "loading active" : "loading"}>
-      <div className="loading_box">
-      <div className="loader">      
-      </div>
-      </div>
-      </div> */}
       <div className="search-container">
         <div className="search_box">
           <i className="bx bx-search search"></i>
@@ -24,10 +30,11 @@ const Home = () => {
             placeholder="Mahsulotlarni qidirish..."
             className="search-input"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onClick={handleSearchClick} // Redirect on click
+            readOnly // Prevents typing in Home page
           />
         </div>
-        <i className="bx bx-heart heart"></i>
+        {/* <i className="bx bx-heart heart"></i> */}
       </div>
       <Announcements />
       <Categories onCategorySelect={setSelectedCategory} />

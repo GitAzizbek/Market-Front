@@ -11,6 +11,7 @@ import PaymentDetailPage from "./components/PaymentDetailPage";
 import SuccessPage from "./components/PaymentConfirmation";
 import Profile from "./components/Profile";
 import ProductComments from "./components/Comments";
+import Catalog from "./components/Catalog";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/success" Component={SuccessPage} />
           <Route path="/profile" Component={Profile} />
           <Route path="/comments/:id" Component={ProductComments} />
+          <Route path="/catalog" Component={Catalog} />
         </Routes>
         <BottomNavbar />
       </div>

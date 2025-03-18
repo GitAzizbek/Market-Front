@@ -6,7 +6,7 @@ import { Scrollbar } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/scrollbar";
 import { ToastContainer, toast } from "react-toastify";
-import { FaStar } from "react-icons/fa"; // Import FaStar for ratings
+import { FaStar } from "react-icons/fa";
 
 function ProductDetail() {
   const notify = () => toast.warning("Iltimos rang va o'lcham tanlang");

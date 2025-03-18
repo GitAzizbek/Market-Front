@@ -4,9 +4,7 @@ import avatar from "../images/default-avatar.png";
 import { FaUser, FaShoppingCart, FaStar } from "react-icons/fa";
 
 const Profile = () => {
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const token = queryParams.get("token");
+  const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
   const [profile, setProfile] = useState(null);

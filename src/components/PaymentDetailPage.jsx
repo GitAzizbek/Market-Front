@@ -10,6 +10,9 @@ function PaymentDetailPage() {
   const sellerCardNumber = "9860 3566 2068 7729";
   const sellerName = "Azizbek Aliyev";
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  console.log(token);
+
   const success = () =>
     toast.success("Buyurtma muvaffaqqiyatli ro'yhatdan o'tkazildi");
   const error = () => toast.success("Nimadir xatolik yuz berdi");
@@ -66,8 +69,7 @@ function PaymentDetailPage() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization:
-              "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoyNjA2MjE3MDc2LCJpYXQiOjE3NDIyMTcwNzYsImp0aSI6IjE1MDFmZWU4MzRkNjQ1YWViYjNjNmVhMDJiZjk3MDkxIiwidXNlcl9pZCI6MX0.0UG3jLrpBPMsOU8c8vYGr-kjKhlasOAkNFdR_FZ8C7A",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(bodydata),
         }
@@ -95,8 +97,7 @@ function PaymentDetailPage() {
           {
             method: "POST",
             headers: {
-              Authorization:
-                "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoyNjA2MjE3MDc2LCJpYXQiOjE3NDIyMTcwNzYsImp0aSI6IjE1MDFmZWU4MzRkNjQ1YWViYjNjNmVhMDJiZjk3MDkxIiwidXNlcl9pZCI6MX0.0UG3jLrpBPMsOU8c8vYGr-kjKhlasOAkNFdR_FZ8C7A",
+              Authorization: `Bearer ${token}`,
             },
             body: formData,
           }
@@ -115,7 +116,7 @@ function PaymentDetailPage() {
 
         success();
         setTimeout(navigate("/success"), 1000);
-        localStorage.clear();
+        localStorage.removeItem("cartItems");
       }
     } catch (error) {
       console.error("Xatolik:", error);
