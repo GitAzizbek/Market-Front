@@ -2,6 +2,7 @@ import React, { use, useState } from "react";
 import Announcements from "./Announcements";
 import Categories from "./Categories";
 import Products from "./Products";
+import { ToastContainer, toast } from "react-toastify";
 
 const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);

@@ -18,20 +18,22 @@ const BottomNavbar = () => {
         </span>
         <span className="nav-text">Katalog</span>
       </div>
-      <Link to={'/cart'}>
-      <div className="nav-item">
-        <span className="nav-icon">
-          <i class="bx bx-shopping-bag"></i>
-        </span>
-        <span className="nav-text">Savat</span>
-      </div>
+      <Link to={"/cart"}>
+        <div className="nav-item">
+          <span className="nav-icon">
+            <i class="bx bx-shopping-bag"></i>
+          </span>
+          <span className="nav-text">Savat</span>
+        </div>
       </Link>
-      <div className="nav-item">
-        <span className="nav-icon">
-          <i class="bx bx-user"></i>
-        </span>
-        <span className="nav-text">Profil</span>
-      </div>
+      <Link to={"/profile"}>
+        <div className="nav-item">
+          <span className="nav-icon">
+            <i class="bx bx-user"></i>
+          </span>
+          <span className="nav-text">Profil</span>
+        </div>
+      </Link>
     </nav>
   );
 };

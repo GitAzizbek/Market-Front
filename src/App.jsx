@@ -6,6 +6,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProductDetail from "./components/ProductDetail";
 import Cart from "./components/Cart";
 import PaymentProcessing from "./components/PaymentProcess";
+import PaymentPage from "./components/PaymentDetailPage";
+import PaymentDetailPage from "./components/PaymentDetailPage";
+import SuccessPage from "./components/PaymentConfirmation";
+import Profile from "./components/Profile";
+import ProductComments from "./components/Comments";
 
 function App() {
   return (
@@ -16,6 +21,10 @@ function App() {
           <Route path="/product/:id" Component={ProductDetail} />
           <Route path="/cart" Component={Cart} />
           <Route path="/payment-processing" Component={PaymentProcessing} />
+          <Route path="/payment" Component={PaymentDetailPage} />
+          <Route path="/success" Component={SuccessPage} />
+          <Route path="/profile" Component={Profile} />
+          <Route path="/comments/:id" Component={ProductComments} />
         </Routes>
         <BottomNavbar />
       </div>

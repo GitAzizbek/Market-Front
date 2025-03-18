@@ -111,7 +111,7 @@ function Cart() {
               className="checkout-button"
               onClick={() => navigate("/payment-processing")}
             >
-              Buyurtma berish
+              Buyurtmani rasmiylashtirish
             </button>
           </div>
         </>

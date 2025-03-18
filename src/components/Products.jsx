@@ -27,8 +27,7 @@ function Products({ selectedCategory, searchQuery }) {
       <div className="products_top">
         <h3 className="product_title">Barcha mahsulotlar</h3>
       </div>
-      <CardList products={data} />{" "}
-      {/* 🔹 Yangi komponentni shu yerda ishlatamiz */}
+      <CardList products={data} />
     </div>
   );
 }

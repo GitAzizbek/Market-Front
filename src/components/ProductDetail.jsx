@@ -6,6 +6,7 @@ import { Scrollbar } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/scrollbar";
 import { ToastContainer, toast } from "react-toastify";
+import { FaStar } from "react-icons/fa"; // Import FaStar for ratings
 
 function ProductDetail() {
   const notify = () => toast.warning("Iltimos rang va o'lcham tanlang");
@@ -20,7 +21,10 @@ function ProductDetail() {
   const [selectedSize, setSelectedSize] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [cartItems, setCartItems] = useState([]);
+  const [reviews, setReviews] = useState([]); // State for reviews
+  const [loadingReviews, setLoadingReviews] = useState(true); // Loading state for reviews
 
+  // Fetch product details
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -37,10 +41,32 @@ function ProductDetail() {
     fetchProduct();
   }, [id]);
 
+  // Reset selected size when color changes
   useEffect(() => {
     setSelectedSize(null);
   }, [selectedColor]);
 
+  // Fetch reviews for the product
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await axios.get(
+          `https://dev.api.gosslujba.dynamicsoft.uz/api/orders/product-comment/${id}`
+        );
+        if (response.data.data) {
+          setReviews(response.data.data);
+        }
+      } catch (error) {
+        console.error("Sharhlarni yuklashda xatolik:", error);
+      } finally {
+        setLoadingReviews(false);
+      }
+    };
+
+    fetchReviews();
+  }, [id]);
+
+  // Get selected variant based on color and size
   const getSelectedVariant = () => {
     if (!selectedColor || !selectedSize || !product) return null;
     return product.colors.find(
@@ -49,6 +75,7 @@ function ProductDetail() {
     );
   };
 
+  // Add product to cart
   const handleAddToCart = () => {
     const selectedVariant = getSelectedVariant();
     if (!selectedVariant) {
@@ -80,18 +107,34 @@ function ProductDetail() {
     success();
   };
 
+  // Navigate to cart
   const goToCart = () => {
-    navigate("/cart", { state: { cartItems } }); // Navigate to cart with cart items
+    navigate("/cart", { state: { cartItems } });
   };
 
   if (!product) {
     return <p className="detail-loading">Yuklanmoqda...</p>;
   }
 
+  // Get unique colors
+  const uniqueColors = Array.from(
+    new Set(product.colors.map((color) => color.color.name))
+  ).map((colorName) =>
+    product.colors.find((color) => color.color.name === colorName)
+  );
+
+  // Get filtered sizes based on selected color
+  const filteredSizes = product.colors
+    .filter((color) => color.color.name === selectedColor)
+    .map((color) => color.size.size);
+
+  // Get unique sizes
+  const uniqueSizes = Array.from(new Set(filteredSizes));
+
   return (
     <div className="detail-container">
       <ToastContainer />
-      {/* Chap taraf - Rasmlar */}
+      {/* Product Images */}
       <div className="detail-images-container">
         <Swiper
           scrollbar={{ hide: false }}
@@ -109,7 +152,57 @@ function ProductDetail() {
           ))}
         </Swiper>
       </div>
-
+      <Swiper
+        scrollbar={{ hide: false }}
+        modules={[Scrollbar]}
+        className="mySwipper"
+        autoHeight={true} // Enable autoHeight to adjust slide height dynamically
+        style={{ maxHeight: "130px" }} // Set a maximum height for the Swiper container
+      >
+        <div className="reviews-section">
+          <h2>Sharhlar</h2>
+          {loadingReviews ? (
+            <p>Sharhlar yuklanmoqda...</p>
+          ) : reviews.length > 0 ? (
+            reviews.slice(0, 5).map((review) => (
+              <SwiperSlide key={review.id}>
+                {" "}
+                {/* Add key here */}
+                <div className="review-card">
+                  <div className="review-header">
+                    <div className="review-rating">
+                      {Array.from({ length: 5 }, (_, index) => (
+                        <FaStar
+                          key={index}
+                          className={`w-4 h-4 star ${
+                            index < review.rate ? "filled" : "empty"
+                          }`}
+                          style={{ width: "1rem", height: "1rem" }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <p className="review-text">{review.text}</p>
+                  <div className="review_box">
+                    <p className="review-text-2">
+                      Muallif: {review.user?.first_name || "Noma'lum"}
+                    </p>
+                    <a
+                      className="comments_link"
+                      href={`/comments/${product.id}`}
+                    >
+                      Barcha sharhlar
+                    </a>
+                  </div>
+                </div>
+              </SwiperSlide>
+            ))
+          ) : (
+            <p className="no-reviews">Hozircha hech qanday sharh yo'q.</p>
+          )}
+        </div>
+      </Swiper>
+      {/* Product Details */}
       <div className="detail-info-container">
         <h2 className="detail-title">{product.name}</h2>
         <p className="detail-description">{product.description}</p>
@@ -121,10 +214,11 @@ function ProductDetail() {
           <strong>{product.category?.[0]?.name || "Noma'lum"}</strong>
         </p>
 
+        {/* Color Selection */}
         <div className="detail-options">
           <h3>Rangni tanlang:</h3>
           <div className="color-options">
-            {product.colors.map((color) => (
+            {uniqueColors.map((color) => (
               <button
                 key={color.id}
                 className={`color-button ${
@@ -138,29 +232,25 @@ function ProductDetail() {
           </div>
         </div>
 
-        {/* O'lchamni tanlash */}
+        {/* Size Selection */}
         <div className="detail-options">
           <h3>O'lchamni tanlang:</h3>
           <div className="size-options">
-            {product.colors.map((color) => {
-              const isSizeForSelectedColor = color.color.name === selectedColor;
-              return (
-                <button
-                  key={color.size.id}
-                  className={`size-button ${
-                    selectedSize === color.size.size ? "active" : ""
-                  }`}
-                  onClick={() => setSelectedSize(color.size.size)}
-                  disabled={!isSizeForSelectedColor}
-                >
-                  {color.size.size}
-                </button>
-              );
-            })}
+            {uniqueSizes.map((size) => (
+              <button
+                key={size}
+                className={`size-button ${
+                  selectedSize === size ? "active" : ""
+                }`}
+                onClick={() => setSelectedSize(size)}
+              >
+                {size}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Miqdor */}
+        {/* Quantity Selection */}
         <div className="detail-options">
           <h3>Miqdor:</h3>
           <div className="quantity-control">
@@ -180,11 +270,13 @@ function ProductDetail() {
           </div>
         </div>
 
-        {/* Savatga qo'shish tugmasi */}
+        {/* Add to Cart Button */}
         <button className="detail-buy-button" onClick={handleAddToCart}>
           Savatga qo'shish
         </button>
       </div>
+
+      {/* Reviews Section */}
     </div>
   );
 }

@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const PaymentProcessing = () => {
+  const navigate = useNavigate();
   const [deliveryType, setDeliveryType] = useState("delivery");
-  const [paymentType, setPaymentType] = useState("cash");
+  const [paymentType, setPaymentType] = useState("card");
   const [cardDetails, setCardDetails] = useState({
     cardNumber: "",
     expiryDate: "",
@@ -10,6 +12,14 @@ const PaymentProcessing = () => {
   const [file, setFile] = useState(null);
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [useAutomaticAddress, setUseAutomaticAddress] = useState(false);
+
+  // localStorage'dan saqlangan manzilni olish
+  useEffect(() => {
+    const savedAddress = localStorage.getItem("deliveryAddress");
+    if (savedAddress) {
+      setDeliveryAddress(savedAddress);
+    }
+  }, []);
 
   const handleDeliveryChange = (e) => {
     setDeliveryType(e.target.value);
@@ -44,7 +54,9 @@ const PaymentProcessing = () => {
   };
 
   const handleAddressChange = (e) => {
-    setDeliveryAddress(e.target.value);
+    const newAddress = e.target.value;
+    setDeliveryAddress(newAddress);
+    localStorage.setItem("deliveryAddress", newAddress); // Manzilni localStorage'ga saqlash
   };
 
   const handleUseAutomaticAddress = () => {
@@ -61,7 +73,9 @@ const PaymentProcessing = () => {
                 `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
               );
               const data = await response.json();
-              setDeliveryAddress(data.display_name || "Manzil topilmadi");
+              const address = data.display_name || "Manzil topilmadi";
+              setDeliveryAddress(address);
+              localStorage.setItem("deliveryAddress", address); // Avtomatik manzilni saqlash
             } catch (error) {
               console.error("Manzilni olishda xatolik:", error);
               setDeliveryAddress("Manzilni olishda xatolik yuz berdi");
@@ -76,6 +90,7 @@ const PaymentProcessing = () => {
       }
     } else {
       setDeliveryAddress("");
+      localStorage.removeItem("deliveryAddress"); // Manzilni tozalash
     }
   };
 
@@ -92,92 +107,79 @@ const PaymentProcessing = () => {
 
   return (
     <div className="payment-container">
-      <h1>To'lovni Amalga Oshirish</h1>
-
-      <div className="card">
-        <div className="card-header">
-          <h3>Karta Ma'lumotlari</h3>
-        </div>
-        <div className="card-body">
-          <p>1234 1234 1234 1234</p>
-          <p>Aliyev Azizbek</p>
-        </div>
-      </div>
-
       <div className="form-group">
-        <label>
-          Yetkazib Berish Turi:
-          <select value={deliveryType} onChange={handleDeliveryChange}>
-            <option value="delivery">Yetkazib Berish</option>
-          </select>
-        </label>
-      </div>
-      <div className="form-group">
-        <label>
-          Yetkazib Berish Manzili:
+        <label className="form-label">Yetkazib Berish Manzili:</label>
+        <div className="input-container">
+          <i className="bx bx-map input-icon"></i>
           <input
             type="text"
             value={deliveryAddress}
             onChange={handleAddressChange}
             placeholder="Manzilingizni kiriting"
             disabled={useAutomaticAddress}
+            className="input-field"
           />
-        </label>
-        <button onClick={handleUseAutomaticAddress} type="button">
+        </div>
+        <button
+          onClick={handleUseAutomaticAddress}
+          type="button"
+          className="address-toggle-button"
+        >
           {useAutomaticAddress
             ? "Manzilni qo'lda kiritish"
             : "Manzilni avtomatik olish"}
         </button>
       </div>
-      <div className="form-group">
-        <label>
-          To'lov Turi:
-          <select value={paymentType} onChange={handlePaymentChange}>
-            <option value="card">Karta</option>
-          </select>
-        </label>
-      </div>
 
-      <div className="card-form">
-        <h3>To'lov qilgan karta ma'lumotlaringizni Kiriting</h3>
-        <form className="payment_form">
-          <div className="form-group">
-            <label>
-              Karta Raqami:
-              <input
-                type="text"
-                name="cardNumber"
-                value={cardDetails.cardNumber}
-                onChange={handleCardDetailsChange}
-                placeholder="1234 5678 9012 3456"
-              />
-            </label>
+      <div className="form-section">
+        <label className="form-section-label">Yetkazib Berish Turi:</label>
+        <div className="option-cards">
+          <div
+            className={`option-card ${
+              deliveryType === "delivery" ? "option-card-selected" : ""
+            }`}
+            onClick={() => handleDeliveryChange("delivery")}
+          >
+            <i className="bx bxs-truck option-card-icon"></i>
+            <span className="option-card-title">Yetkazib Berish</span>
           </div>
-          <div className="form-group">
-            <label>
-              Amal Qilish Muddat:
-              <input
-                type="text"
-                name="expiryDate"
-                value={cardDetails.expiryDate}
-                onChange={handleCardDetailsChange}
-                placeholder="MM/YY"
-              />
-            </label>
+          <div
+            className={`option-card disabled`}
+            onClick={() => handleDeliveryChange("pickup")}
+          >
+            <i className="bx bx-store option-card-icon"></i>
+            <span className="option-card-title">Olib Ketish</span>
           </div>
-        </form>
+        </div>
       </div>
 
-      <div className="form-group">
-        <label>
-          Check Faylini Yuklash:
-          <input type="file" onChange={handleFileChange} />
-        </label>
+      <div className="form-section">
+        <label className="form-section-label">To'lov Turi:</label>
+        <div className="option-cards">
+          <div
+            className={`option-card ${
+              paymentType === "card" ? "option-card-selected" : ""
+            }`}
+            onClick={() => handlePaymentChange("card")}
+          >
+            <i className="bx bx-credit-card option-card-icon"></i>
+            <span className="option-card-title">Karta</span>
+          </div>
+          <div
+            className={`option-card disabled`}
+            onClick={() => handlePaymentChange("cash")}
+          >
+            <i className="bx bx-money option-card-icon"></i>
+            <span className="option-card-title">Naqd</span>
+          </div>
+        </div>
       </div>
 
-      <button className="confirm-button" onClick={handleSubmit}>
-        Tasdiqlash
-      </button>
+      <div className="form-section">
+        <button className="submit-button" onClick={() => navigate("/payment")}>
+          Buyurtmani Rasmiylashtirish
+        </button>
+      </div>
     </div>
   );
 };
