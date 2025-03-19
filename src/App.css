@@ -9,6 +9,10 @@
   font-family: "Poppins";
 }
 
+body {
+  background-color: #fff;
+}
+
 .bottom-navbar {
   position: fixed;
   bottom: 0;

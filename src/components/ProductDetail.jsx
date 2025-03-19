@@ -198,7 +198,9 @@ function ProductDetail() {
               </SwiperSlide>
             ))
           ) : (
-            <p className="no-reviews">Hozircha hech qanday sharh yo'q.</p>
+            <a className="comments_link" href={`/comments/${product.id}`}>
+              Sharx berish
+            </a>
           )}
         </div>
       </Swiper>
