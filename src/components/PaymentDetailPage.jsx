@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { data } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 function PaymentDetailPage() {
   const [cardNumber, setCardNumber] = useState("");
@@ -141,8 +142,11 @@ function PaymentDetailPage() {
     <div className="PaymentDetailPage">
       <ToastContainer />
       <div className="seller_card_info">
-        <h6>Jami summa{parseInt(calculateTotal()).toLocaleString()} UZS</h6>
         <p>Ushbu kartaga to'lov qiling</p>
+        <br />
+        <h6 className="full_payment" style={{ color: "red" }}>
+          Jami: {parseInt(calculateTotal()).toLocaleString()} UZS
+        </h6>
         <div className="copy-container">
           <h3>{sellerCardNumber}</h3>
           <i
