@@ -39,8 +39,7 @@ function ProductComments() {
         values,
         {
           headers: {
-            Authorization:
-              "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoyNjA2MjM5NTIxLCJpYXQiOjE3NDIyMzk1MjEsImp0aSI6ImNlMTdjNTI1OWU2ODQ3Mzc5OTcwMzllMWQ0MmFmYTgyIiwidXNlcl9pZCI6MX0.uyg55uXZC-__4Ioi4DPobeSrNDXmvbCFMTrPW8DXphY",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
