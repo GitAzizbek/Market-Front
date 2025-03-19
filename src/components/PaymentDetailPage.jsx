@@ -11,7 +11,20 @@ function PaymentDetailPage() {
   const sellerName = "Azizbek Aliyev";
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const [cartItems, setCartItems] = useState([]);
+
+  useEffect(() => {
+    const storedCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+    setCartItems(storedCart);
+  }, []);
   console.log(token);
+
+  const calculateTotal = () => {
+    return cartItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
+  };
 
   const success = () =>
     toast.success("Buyurtma muvaffaqqiyatli ro'yhatdan o'tkazildi");
@@ -128,6 +141,7 @@ function PaymentDetailPage() {
     <div className="PaymentDetailPage">
       <ToastContainer />
       <div className="seller_card_info">
+        <h6>Jami summa{parseInt(calculateTotal()).toLocaleString()} UZS</h6>
         <p>Ushbu kartaga to'lov qiling</p>
         <div className="copy-container">
           <h3>{sellerCardNumber}</h3>
