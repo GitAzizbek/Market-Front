@@ -357,7 +357,8 @@ const Profile = () => {
                   </div>
                   <p className="review-text">{review.text}</p>
                   <p className="review-text-2">
-                    Maxsulot: {review.product.name}
+                    Maxsulot:{" "}
+                    {review.product == null ? "Nomalum" : review.product.name}
                   </p>
                 </div>
               ))

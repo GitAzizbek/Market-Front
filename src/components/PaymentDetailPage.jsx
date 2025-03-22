@@ -31,10 +31,6 @@ function PaymentDetailPage() {
     );
   };
 
-  const success = () =>
-    toast.success("Buyurtma muvaffaqqiyatli ro'yhatdan o'tkazildi");
-  const error = () => toast.success("Nimadir xatolik yuz berdi");
-
   const handleCardInputChange = (e) => {
     let value = e.target.value.replace(/\D/g, ""); // Faqat raqamlarni qabul qilish
     value = value.replace(/(\d{4})/g, "$1 ").trim(); // Har 4 xonadan keyin bo'sh joy qo'shish
@@ -96,12 +92,10 @@ function PaymentDetailPage() {
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Backend xatolik qaytardi:", errorData);
-        alert(`Xatolik: ${errorData.message || "Noma’lum xatolik"}`);
         return;
       }
 
       const result = await response.json();
-      console.log("Buyurtma muvaffaqiyatli yaratildi:", result);
       // 2️⃣ Buyurtma ID ni olish
       const orderId = result.id;
 
@@ -132,7 +126,6 @@ function PaymentDetailPage() {
 
         console.log("Fayl muvaffaqiyatli yuklandi!");
 
-        success();
         setTimeout(navigate("/success"), 1000);
         localStorage.removeItem("cartItems");
       }
@@ -144,7 +137,6 @@ function PaymentDetailPage() {
 
   return (
     <div className="PaymentDetailPage">
-      <ToastContainer />
       <div className="seller_card_info">
         <p>Ushbu kartaga to'lov qiling</p>
         <br />

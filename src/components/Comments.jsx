@@ -43,7 +43,6 @@ function ProductComments() {
           },
         }
       );
-      toast.success("Sharhingiz muvaffaqiyatli qo'shildi!");
       setReviews((prev) => [
         ...prev,
         { ...values, user: { first_name: "Siz" } },
@@ -57,7 +56,6 @@ function ProductComments() {
 
   return (
     <div className="comments-container">
-      <ToastContainer />
       <div className="comment_box">
         <h4>Mahsulot Sharhlari</h4>
         <button onClick={() => setShowForm(true)}>Sharh qo'shish</button>
