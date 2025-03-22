@@ -197,7 +197,10 @@ const PaymentProcessing = () => {
       <div className="form-section">
         <label>To'lov turi:</label>
         <div className="option-cards">
-          {paymentMethods.map((method) => (
+          {(selectedDelivery?.method_name === "Yetkazib berish"
+            ? paymentMethods.filter((method) => method.method_name !== "Naqd")
+            : paymentMethods
+          ).map((method) => (
             <div
               key={method.id}
               className={`option-card ${
