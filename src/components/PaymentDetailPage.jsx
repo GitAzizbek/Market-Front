@@ -8,11 +8,11 @@ function PaymentDetailPage() {
   const [cardNumber, setCardNumber] = useState("");
   const [fullName, setFullName] = useState("");
   const [file, setFile] = useState(null);
-  const sellerCardNumber = localStorage.getItem("card")
-    ? localStorage.getItem("card")
+  const sellerCardNumber = localStorage.getItem("cardNumber")
+    ? localStorage.getItem("cardNumber")
     : "9860 3566 2068 7729";
-  const sellerName = localStorage.getItem("card_holder")
-    ? localStorage.getItem("card_holder")
+  const sellerName = localStorage.getItem("cardHolder")
+    ? localStorage.getItem("cardHolder")
     : "Azizbek Aliyev";
   const navigate = useNavigate();
   const token = localStorage.getItem("token");

@@ -35,11 +35,6 @@ const PaymentProcessing = () => {
           (method) => method.status === "active"
         );
         setPaymentMethods(activePayments);
-        const metod = paymentMethods.filter(
-          (method) => method.method_name == "Karta"
-        );
-        localStorage.setItem("card_holder", metod[0].card_holder);
-        localStorage.setItem("card", metod[0].card);
         if (activePayments.length > 0) {
           setSelectedPayment(activePayments[0]);
         }
@@ -82,6 +77,22 @@ const PaymentProcessing = () => {
       setDeliveryAddress(selectedDelivery?.address || "");
     }
   };
+
+  function saveCardDetails(paymentMethods) {
+    const cardMethod = paymentMethods.find(
+      (method) => method.method_name === "Karta"
+    );
+
+    if (cardMethod && cardMethod.card && cardMethod.card_holder) {
+      localStorage.setItem("cardNumber", cardMethod.card);
+      localStorage.setItem("cardHolder", cardMethod.card_holder);
+      console.log("Card details saved to localStorage");
+    } else {
+      console.log("No valid card method found");
+    }
+  }
+
+  saveCardDetails(paymentMethods);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
