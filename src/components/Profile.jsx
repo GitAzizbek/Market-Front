@@ -1,22 +1,43 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import avatar from "../images/default-avatar.png";
+import { useNavigate } from "react-router-dom";
 import { FaUser, FaShoppingCart, FaStar } from "react-icons/fa";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import profile from "../images/default-avatar.webp";
+import { ToastContainer, toast } from "react-toastify";
+
+// Tabs ma'lumotlari
+const tabs = [
+  { id: "personal", label: "Shaxsiy Ma'lumotlar", icon: <FaUser /> },
+  { id: "orders", label: "Buyurtmalarim", icon: <FaShoppingCart /> },
+  { id: "reviews", label: "Sharhlarim", icon: <FaStar /> },
+];
 
 const Profile = () => {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
-
+  const success = toast.success(
+    "Profile malumotlari muvaffaqqiyatli yangilandi"
+  );
   const [profile, setProfile] = useState(null);
   const [orders, setOrders] = useState([]);
-  const [reviews, setReviews] = useState([]); // State for reviews
+  const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("personal");
-  const apiUrl = "https://admin.azizbekaliyev.uz/api/users/profile";
-  const orders_url = "https://admin.azizbekaliyev.uz/api/orders/orders";
-  const reviews_url = "https://admin.azizbekaliyev.uz/api/orders/comments"; // API for reviews
+  const [selectedFile, setSelectedFile] = useState(null);
 
+  const handleFileChange = (event) => {
+    const file = event.currentTarget.files[0];
+    setSelectedFile(file);
+    setFieldValue("avatar", file);
+  };
+  const apiUrl = "https://admin.azizbekaliyev.uz/api/users/profile";
+  const apiUrl2 = "https://admin.azizbekaliyev.uz/api/users/update";
+  const orders_url = "https://admin.azizbekaliyev.uz/api/orders/orders";
+  const reviews_url = "https://admin.azizbekaliyev.uz/api/orders/comments";
+
+  // Foydalanuvchi ma'lumotlarini yuklash
   useEffect(() => {
     const fetchProfile = async () => {
       if (!token) {
@@ -46,6 +67,7 @@ const Profile = () => {
     fetchProfile();
   }, [token]);
 
+  // Buyurtmalarni yuklash
   useEffect(() => {
     const fetchOrders = async () => {
       if (!token) return;
@@ -58,7 +80,6 @@ const Profile = () => {
 
         if (response.ok) {
           setOrders(data);
-          console.log(data);
         } else {
           console.error("Failed to fetch orders", data);
         }
@@ -70,6 +91,7 @@ const Profile = () => {
     fetchOrders();
   }, [token]);
 
+  // Sharhlarni yuklash
   useEffect(() => {
     const fetchReviews = async () => {
       if (!token) return;
@@ -81,7 +103,7 @@ const Profile = () => {
         const data = await response.json();
 
         if (response.ok) {
-          setReviews(data.data); // Set reviews data
+          setReviews(data.data);
         } else {
           console.error("Failed to fetch reviews", data);
         }
@@ -93,19 +115,43 @@ const Profile = () => {
     fetchReviews();
   }, [token]);
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("uz-UZ", {
-      style: "decimal",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
+  // Ma'lumotlarni yangilash funksiyasi
+  const handleUpdateProfile = async (values) => {
+    const formData = new FormData();
+    formData.append("first_name", values.first_name);
+    formData.append("address", values.address);
+    if (values.avatar) {
+      formData.append("avatar", values.avatar);
+    }
+
+    try {
+      const response = await fetch(apiUrl2, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setProfile(data.data); // Yangilangan ma'lumotlarni state-ga saqlash
+        success();
+      } else {
+        // alert(data.message || "Ma'lumotlarni yangilashda xatolik yuz berdi");
+      }
+    } catch (err) {
+      // alert("Tarmoq xatosi yuz berdi");
+    }
   };
 
-  const tabs = [
-    { id: "personal", label: "Shaxsiy Ma'lumotlar", icon: <FaUser /> },
-    { id: "orders", label: "Buyurtmalarim", icon: <FaShoppingCart /> },
-    { id: "reviews", label: "Sharhlarim", icon: <FaStar /> },
-  ];
+  // Formik validatsiya sxemasi
+  const validationSchema = Yup.object({
+    first_name: Yup.string().notRequired("Ism kiritilishi shart"),
+    address: Yup.string().notRequired("Manzil kiritilishi shart"),
+    avatar: Yup.mixed().notRequired("Rasm yuklashingiz shart"), // Fayl uchun validatsiya
+  });
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
@@ -130,28 +176,85 @@ const Profile = () => {
         {activeTab === "personal" && profile && (
           <div className="personal-info">
             <div className="profile-header">
-              <img className="info-avatar" src={avatar} alt="User Avatar" />
+              <img
+                className="info-avatar"
+                src={
+                  `https://admin.azizbekaliyev.uz${profile.avatar}` || profile
+                }
+                alt="User Avatar"
+              />
               <h3>
                 {profile.first_name} {profile.last_name || ""}
               </h3>
             </div>
-            <div className="info-list">
-              <div className="info-item">
-                <FaUser className="icon" />
-                <span>
-                  <strong>Ism:</strong> {profile.first_name}
-                </span>
-              </div>
-              <div className="info-item">
-                <FaShoppingCart className="icon" />
-                <span>
-                  <strong>Telefon:</strong> {profile.phone}
-                </span>
-              </div>
-            </div>
+
+            {/* Ma'lumotlarni yangilash formasi */}
+            <Formik
+              initialValues={{
+                first_name: profile.first_name || "",
+                address: profile.address || "",
+                avatar: null,
+              }}
+              validationSchema={validationSchema}
+              onSubmit={handleUpdateProfile}
+            >
+              {({ isSubmitting, setFieldValue }) => (
+                <Form className="profile-form">
+                  <div className="form-group">
+                    <label>Ism</label>
+                    <Field type="text" name="first_name" />
+                    <ErrorMessage
+                      name="first_name"
+                      component="div"
+                      className="error"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Manzil</label>
+                    <Field type="text" name="address" />
+                    <ErrorMessage
+                      name="address"
+                      component="div"
+                      className="error"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label className="file-upload">
+                      <input
+                        type="file"
+                        onChange={(event) => {
+                          setFieldValue("avatar", event.currentTarget.files[0]); // Faylni o'zgartirish
+                        }}
+                      />
+                      <span>
+                        {selectedFile ? selectedFile.name : "Rasm yuklash"}
+                        <i class="bx bx-cloud-upload"></i>
+                      </span>
+                    </label>
+
+                    <ErrorMessage
+                      name="avatar"
+                      component="div"
+                      className="error"
+                    />
+                  </div>
+
+                  <button
+                    className="profile_button"
+                    type="submit"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? "Yuklanmoqda..." : "Yangilash"}
+                  </button>
+                </Form>
+              )}
+            </Formik>
           </div>
         )}
 
+        {/* Buyurtmalar va sharhlar qismlari */}
         {activeTab === "orders" && (
           <div className="orders-list">
             {orders.length > 0 ? (
@@ -213,7 +316,7 @@ const Profile = () => {
                           className={`w-4 h-4 star ${
                             index < review.rate ? "filled" : "empty"
                           }`}
-                          style={{ width: "1rem", height: "1rem" }} // Explicitly set width and height
+                          style={{ width: "1rem", height: "1rem" }}
                         />
                       ))}
                     </div>

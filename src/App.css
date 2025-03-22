@@ -1264,7 +1264,7 @@ button:hover {
   max-width: 400px;
   margin: 20px auto;
   padding: 20px;
-  text-align: center;
+  text-align: left;
   background: #fff;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
@@ -1706,4 +1706,44 @@ button:hover {
 
 .link-style {
   color: #0400ff;
+}
+
+.profile_button {
+  width: 100%;
+  padding: 10px 10px;
+  border: none;
+  background-color: #28a745;
+  color: #fff;
+  border-radius: 8px;
+}
+
+.file-upload {
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: #fff;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+  border: 0.5px solid lime;
+}
+
+.file-upload input {
+  display: none;
+}
+
+.file-upload:hover {
+  background-color: #45a049;
+}
+.file-upload span {
+  color: lime;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.file-upload i {
+  font-size: 24px;
 }
