@@ -68,8 +68,8 @@ function PaymentDetailPage() {
     }));
 
     const bodydata = {
-      payment_method: "card",
-      delivery_method: "delivery",
+      payment_method: localStorage.getItem("payment_method"),
+      delivery_method: localStorage.getItem("delivery_method"),
       delivery_address: adrees,
       total_amount: totalAmount,
       items: items,

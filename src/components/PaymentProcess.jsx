@@ -3,61 +3,50 @@ import { useNavigate } from "react-router-dom";
 
 const PaymentProcessing = () => {
   const navigate = useNavigate();
-  const [deliveryType, setDeliveryType] = useState("delivery");
-  const [paymentType, setPaymentType] = useState("card");
-  const [cardDetails, setCardDetails] = useState({
-    cardNumber: "",
-    expiryDate: "",
-  });
-  const [file, setFile] = useState(null);
+  const [deliveryMethods, setDeliveryMethods] = useState([]);
+  const [paymentMethods, setPaymentMethods] = useState([]);
+  const [selectedDelivery, setSelectedDelivery] = useState(null);
+  const [selectedPayment, setSelectedPayment] = useState(null);
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [useAutomaticAddress, setUseAutomaticAddress] = useState(false);
 
-  // localStorage'dan saqlangan manzilni olish
   useEffect(() => {
-    const savedAddress = localStorage.getItem("deliveryAddress");
-    if (savedAddress) {
-      setDeliveryAddress(savedAddress);
-    }
+    // Fetch delivery methods
+    fetch("https://admin.azizbekaliyev.uz/api/orders/delivery-method")
+      .then((res) => res.json())
+      .then((data) => {
+        const activeMethods = data.data.filter(
+          (method) => method.status === "active"
+        );
+        setDeliveryMethods(activeMethods);
+        if (activeMethods.length > 0) {
+          setSelectedDelivery(activeMethods[0]);
+        }
+      })
+      .catch((err) =>
+        console.error("Yetkazib berish usullarini olishda xatolik:", err)
+      );
+
+    // Fetch payment methods
+    fetch("https://admin.azizbekaliyev.uz/api/orders/payment-method")
+      .then((res) => res.json())
+      .then((data) => {
+        const activePayments = data.data.filter(
+          (method) => method.status === "active"
+        );
+        setPaymentMethods(activePayments);
+        if (activePayments.length > 0) {
+          setSelectedPayment(activePayments[0]);
+        }
+      })
+      .catch((err) => console.error("To'lov usullarini olishda xatolik:", err));
   }, []);
 
-  const handleDeliveryChange = (e) => {
-    setDeliveryType(e.target.value);
-  };
-
-  const handlePaymentChange = (e) => {
-    setPaymentType(e.target.value);
-  };
-
-  const handleCardDetailsChange = (e) => {
-    let { name, value } = e.target;
-
-    if (name === "cardNumber") {
-      value = value
-        .replace(/\D/g, "")
-        .replace(/(\d{4})/g, "$1 ")
-        .trim();
-      if (value.length > 19) value = value.slice(0, 19);
+  useEffect(() => {
+    if (selectedDelivery?.address) {
+      setDeliveryAddress(selectedDelivery.address);
     }
-
-    if (name === "expiryDate") {
-      value = value.replace(/\D/g, "");
-      if (value.length > 2) value = value.slice(0, 2) + "/" + value.slice(2, 4);
-      if (value.length > 5) value = value.slice(0, 5);
-    }
-
-    setCardDetails((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
-
-  const handleAddressChange = (e) => {
-    const newAddress = e.target.value;
-    setDeliveryAddress(newAddress);
-    localStorage.setItem("deliveryAddress", newAddress); // Manzilni localStorage'ga saqlash
-  };
+  }, [selectedDelivery]);
 
   const handleUseAutomaticAddress = () => {
     setUseAutomaticAddress(!useAutomaticAddress);
@@ -67,18 +56,14 @@ const PaymentProcessing = () => {
         navigator.geolocation.getCurrentPosition(
           async (position) => {
             const { latitude, longitude } = position.coords;
-
             try {
               const response = await fetch(
                 `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
               );
               const data = await response.json();
-              const address = data.display_name || "Manzil topilmadi";
-              setDeliveryAddress(address);
-              localStorage.setItem("deliveryAddress", address); // Avtomatik manzilni saqlash
+              setDeliveryAddress(data.display_name || "Manzil topilmadi");
             } catch (error) {
               console.error("Manzilni olishda xatolik:", error);
-              setDeliveryAddress("Manzilni olishda xatolik yuz berdi");
             }
           },
           () => {
@@ -89,94 +74,151 @@ const PaymentProcessing = () => {
         setDeliveryAddress("Geolokatsiya qo‘llab-quvvatlanmaydi");
       }
     } else {
-      setDeliveryAddress("");
-      localStorage.removeItem("deliveryAddress"); // Manzilni tozalash
+      setDeliveryAddress(selectedDelivery?.address || "");
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({
-      deliveryType,
-      paymentType,
-      cardDetails,
-      file,
-      deliveryAddress,
-    });
+
+    if (selectedPayment?.method_name == "Karta") {
+      localStorage.setItem("deliveryAddress", deliveryAddress);
+      localStorage.setItem("delivery_method", selectedDelivery?.method_name);
+      localStorage.setItem("payment_method", "Karta");
+      navigate("/payment");
+      return;
+    }
+
+    const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+    const totalAmount = cartItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
+
+    const items = cartItems.map((item) => ({
+      variant: item.id,
+      quantity: item.quantity,
+      price: item.price,
+    }));
+
+    const bodydata = {
+      payment_method: selectedPayment?.method_name,
+      delivery_method: selectedDelivery?.method_name,
+      delivery_address: deliveryAddress,
+      total_amount: totalAmount,
+      items: items,
+    };
+
+    try {
+      const response = await fetch(
+        "https://admin.azizbekaliyev.uz/api/orders/orders/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(bodydata),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Backend xatolik qaytardi:", errorData);
+        alert(`Xatolik: ${errorData.message || "Noma’lum xatolik"}`);
+        return;
+      }
+
+      const result = await response.json();
+      console.log("Buyurtma muvaffaqiyatli yaratildi:", result);
+
+      if (selectedPayment?.method_name.toLowerCase() === "karta") {
+        navigate("/payment-detail", { state: { orderId: result.id } });
+      } else {
+        navigate("/success");
+        localStorage.removeItem("cartItems");
+      }
+    } catch (error) {
+      console.error("Xatolik:", error);
+      alert("Xatolik yuz berdi: " + error.message);
+    }
   };
 
   return (
     <div className="payment-container">
+      {/* Yetkazib berish usuli */}
+      <div className="form-section">
+        <label>Yetkazib berish turi:</label>
+        <div className="option-cards">
+          {deliveryMethods.map((method) => (
+            <div
+              key={method.id}
+              className={`option-card ${
+                selectedDelivery?.id === method.id ? "option-card-selected" : ""
+              }`}
+              onClick={() => setSelectedDelivery(method)}
+            >
+              <img
+                src={`https://admin.azizbekaliyev.uz${method.img}`}
+                alt={method.method_name}
+                className="option-card-icon"
+              />
+              <span>{method.method_name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Yetkazib berish manzili */}
       <div className="form-group">
-        <label className="form-label">Yetkazib Berish Manzili:</label>
-        <div className="input-container">
-          <i className="bx bx-map input-icon"></i>
+        <label>Yetkazib Berish Manzili:</label>
+        {selectedDelivery?.method_name === "Yetkazib berish" ? (
           <input
             type="text"
             value={deliveryAddress}
-            onChange={handleAddressChange}
-            placeholder="Manzilingizni kiriting"
+            onChange={(e) => setDeliveryAddress(e.target.value)}
             disabled={useAutomaticAddress}
-            className="input-field"
           />
-        </div>
-        <button
-          onClick={handleUseAutomaticAddress}
-          type="button"
-          className="address-toggle-button"
-        >
-          {useAutomaticAddress
-            ? "Manzilni qo'lda kiritish"
-            : "Manzilni avtomatik olish"}
-        </button>
+        ) : (
+          <p className="pickup_address">{deliveryAddress}</p>
+        )}
+        {selectedDelivery?.method_name === "Yetkazib berish" ? (
+          <button onClick={handleUseAutomaticAddress} type="button">
+            {useAutomaticAddress
+              ? "Manzilni qo'lda kiritish"
+              : "Manzilni avtomatik olish"}
+          </button>
+        ) : (
+          ""
+        )}
       </div>
 
+      {/* To'lov usuli */}
       <div className="form-section">
-        <label className="form-section-label">Yetkazib Berish Turi:</label>
+        <label>To'lov turi:</label>
         <div className="option-cards">
-          <div
-            className={`option-card ${
-              deliveryType === "delivery" ? "option-card-selected" : ""
-            }`}
-            onClick={() => handleDeliveryChange("delivery")}
-          >
-            <i className="bx bxs-truck option-card-icon"></i>
-            <span className="option-card-title">Yetkazib Berish</span>
-          </div>
-          <div
-            className={`option-card disabled`}
-            onClick={() => handleDeliveryChange("pickup")}
-          >
-            <i className="bx bx-store option-card-icon"></i>
-            <span className="option-card-title">Olib Ketish</span>
-          </div>
+          {paymentMethods.map((method) => (
+            <div
+              key={method.id}
+              className={`option-card ${
+                selectedPayment?.id === method.id ? "option-card-selected" : ""
+              }`}
+              onClick={() => setSelectedPayment(method)}
+            >
+              <img
+                src={`https://admin.azizbekaliyev.uz${method.img}`}
+                alt={method.method_name}
+                className="option-card-icon"
+              />
+              <span>{method.method_name}</span>
+            </div>
+          ))}
         </div>
       </div>
 
+      {/* Buyurtmani rasmiylashtirish tugmasi */}
       <div className="form-section">
-        <label className="form-section-label">To'lov Turi:</label>
-        <div className="option-cards">
-          <div
-            className={`option-card ${
-              paymentType === "card" ? "option-card-selected" : ""
-            }`}
-            onClick={() => handlePaymentChange("card")}
-          >
-            <i className="bx bx-credit-card option-card-icon"></i>
-            <span className="option-card-title">Karta</span>
-          </div>
-          <div
-            className={`option-card disabled`}
-            onClick={() => handlePaymentChange("cash")}
-          >
-            <i className="bx bx-money option-card-icon"></i>
-            <span className="option-card-title">Naqd</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="form-section">
-        <button className="submit-button" onClick={() => navigate("/payment")}>
+        <button className="submit-button" onClick={handleSubmit}>
           Buyurtmani Rasmiylashtirish
         </button>
       </div>
