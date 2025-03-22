@@ -27,6 +27,14 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState("personal");
   const [selectedFile, setSelectedFile] = useState(null);
 
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat("uz-UZ", {
+      style: "decimal",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
   const handleFileChange = (event) => {
     const file = event.currentTarget.files[0];
     setSelectedFile(file);

@@ -186,7 +186,7 @@ button.active {
 .products_bottom {
   display: grid;
   grid-template-columns: auto auto;
-  gap: 20px;
+  gap: 10px;
 }
 
 .card {
@@ -212,7 +212,7 @@ button.active {
   overflow: hidden;
 }
 .product_title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
   color: #141414;
   margin-bottom: 20px;
