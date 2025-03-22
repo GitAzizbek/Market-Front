@@ -27,6 +27,28 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState("personal");
   const [selectedFile, setSelectedFile] = useState(null);
 
+  const months = [
+    "Yanvar",
+    "Fevral",
+    "Mart",
+    "Aprel",
+    "May",
+    "Iyun",
+    "Iyul",
+    "Avgust",
+    "Sentyabr",
+    "Oktyabr",
+    "Noyabr",
+    "Dekabr",
+  ];
+  function format_date(d) {
+    const date = new Date(d);
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDate();
+
+    return `${year} yil | ${day}-${months[month]}`;
+  }
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("uz-UZ", {
       style: "decimal",
@@ -290,6 +312,10 @@ const Profile = () => {
                     <p>
                       <strong>Jami summa:</strong>{" "}
                       {formatCurrency(order.total_amount)} so'm
+                    </p>
+                    <p>
+                      <strong>Buyurtma berilgan vaqti:</strong>{" "}
+                      {format_date(order.created_at)}
                     </p>
                   </div>
                   {order.payment_check && (

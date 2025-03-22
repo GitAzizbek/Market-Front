@@ -1185,7 +1185,7 @@ button:hover {
 
 .profile-tabs {
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 20px;
