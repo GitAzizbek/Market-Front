@@ -6,7 +6,7 @@ import { Scrollbar } from "swiper/modules";
 import { useState } from "react";
 
 function CardList({ products }) {
-  const apiUrl = import.meta.env.VITE_API_URL;
+  const apiUrl = "https://admin.azizbekaliyev.uz";
   const [loading, setLoading] = useState(true);
 
   setTimeout(() => {
