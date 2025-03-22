@@ -15,7 +15,7 @@ function ProductDetail() {
 
   const { id } = useParams();
   const navigate = useNavigate();
-  const apiUrl = import.meta.env.VITE_API_URL;
+  const apiUrl = "https://admin.azizbekaliyev.uz";
   const [product, setProduct] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
@@ -51,7 +51,7 @@ function ProductDetail() {
     const fetchReviews = async () => {
       try {
         const response = await axios.get(
-          `https://dev.api.gosslujba.dynamicsoft.uz/api/orders/product-comment/${id}`
+          `https://admin.azizbekaliyev.uz/api/orders/product-comment/${id}`
         );
         if (response.data.data) {
           setReviews(response.data.data);

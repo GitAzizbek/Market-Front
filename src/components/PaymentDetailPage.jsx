@@ -78,7 +78,7 @@ function PaymentDetailPage() {
     try {
       // 1️⃣ Buyurtmani yaratish
       const response = await fetch(
-        "https://dev.api.gosslujba.dynamicsoft.uz/api/orders/orders/",
+        "https://admin.azizbekaliyev.uz/api/orders/orders/",
         {
           method: "POST",
           headers: {
@@ -107,7 +107,7 @@ function PaymentDetailPage() {
         formData.append("file", file);
 
         const uploadResponse = await fetch(
-          `https://dev.api.gosslujba.dynamicsoft.uz/api/orders/upload/${orderId}`,
+          `https://admin.azizbekaliyev.uz/api/orders/upload/${orderId}`,
           {
             method: "POST",
             headers: {

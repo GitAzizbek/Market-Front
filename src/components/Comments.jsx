@@ -17,7 +17,7 @@ function ProductComments() {
     const fetchReviews = async () => {
       try {
         const response = await axios.get(
-          `https://dev.api.gosslujba.dynamicsoft.uz/api/orders/product-comment/${id}`
+          `https://admin.azizbekaliyev.uz/api/orders/product-comment/${id}`
         );
         if (response.data.data) {
           setReviews(response.data.data);
@@ -35,7 +35,7 @@ function ProductComments() {
   const handleSubmit = async (values, { resetForm }) => {
     try {
       await axios.post(
-        "https://dev.api.gosslujba.dynamicsoft.uz/api/orders/comments",
+        "https://admin.azizbekaliyev.uz/api/orders/comments",
         values,
         {
           headers: {

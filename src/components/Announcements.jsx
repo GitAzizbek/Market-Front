@@ -7,7 +7,7 @@ import axios from "axios";
 import { Autoplay, Navigation } from "swiper/modules";
 
 function Announcements() {
-  const apiUrl = import.meta.env.VITE_API_URL;
+  const apiUrl = "https://admin.azizbekaliyev.uz";
   const [data, setData] = useState([]);
 
   const getAnnounce = async () => {

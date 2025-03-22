@@ -13,12 +13,9 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("personal");
-
-  const api_url = "https://dev.api.gosslujba.dynamicsoft.uz/api/users/profile";
-  const orders_url =
-    "https://dev.api.gosslujba.dynamicsoft.uz/api/orders/orders";
-  const reviews_url =
-    "https://dev.api.gosslujba.dynamicsoft.uz/api/orders/comments"; // API for reviews
+  const apiUrl = "https://admin.azizbekaliyev.uz";
+  const orders_url = "https://admin.azizbekaliyev.uz/api/orders/orders";
+  const reviews_url = "https://admin.azizbekaliyev.uz/api/orders/comments"; // API for reviews
 
   useEffect(() => {
     const fetchProfile = async () => {

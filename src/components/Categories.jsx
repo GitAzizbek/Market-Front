@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 function Categories({ onCategorySelect }) {
-  const apiUrl = import.meta.env.VITE_API_URL;
+  const apiUrl = "https://admin.azizbekaliyev.uz";
   const [data, setData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
 

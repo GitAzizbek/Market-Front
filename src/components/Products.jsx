@@ -3,7 +3,7 @@ import axios from "axios";
 import CardList from "./CardList"; // 🔹 Yangi komponentni chaqiramiz
 
 function Products({ selectedCategory, searchQuery }) {
-  const apiUrl = import.meta.env.VITE_API_URL;
+  const apiUrl = "https://admin.azizbekaliyev.uz";
   const [data, setData] = useState([]);
 
   const getProducts = async (category, name) => {
