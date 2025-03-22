@@ -8,8 +8,12 @@ function PaymentDetailPage() {
   const [cardNumber, setCardNumber] = useState("");
   const [fullName, setFullName] = useState("");
   const [file, setFile] = useState(null);
-  const sellerCardNumber = "9860 3566 2068 7729";
-  const sellerName = "Azizbek Aliyev";
+  const sellerCardNumber = localStorage.getItem("card")
+    ? localStorage.getItem("card")
+    : "9860 3566 2068 7729";
+  const sellerName = localStorage.getItem("card_holder")
+    ? localStorage.getItem("card_holder")
+    : "Azizbek Aliyev";
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const [cartItems, setCartItems] = useState([]);

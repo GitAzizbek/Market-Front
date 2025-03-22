@@ -35,6 +35,11 @@ const PaymentProcessing = () => {
           (method) => method.status === "active"
         );
         setPaymentMethods(activePayments);
+        const metod = paymentMethods.filter(
+          (method) => method.method_name == "Karta"
+        );
+        localStorage.setItem("card_holder", metod[0].card_holder);
+        localStorage.setItem("card", metod[0].card);
         if (activePayments.length > 0) {
           setSelectedPayment(activePayments[0]);
         }
