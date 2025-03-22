@@ -1,15 +1,41 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import empty from "../images/empty.gif";
+import axios from "axios";
 
 function Cart() {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
+  const [stockInfo, setStockInfo] = useState({}); // State to store stock information
 
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cartItems")) || [];
     setCartItems(storedCart);
+    fetchStockInfo(storedCart); // Fetch stock information for items in the cart
   }, []);
+
+  // Fetch stock information for each item in the cart
+  const fetchStockInfo = async (cartItems) => {
+    const stockData = {};
+    for (const item of cartItems) {
+      try {
+        const response = await axios.get(
+          `https://admin.azizbekaliyev.uz/api/main/products/${item.productId}/`
+        );
+        const product = response.data.data;
+        const variant = product.colors.find(
+          (color) =>
+            color.color.name === item.color && color.size.size === item.size
+        );
+        if (variant) {
+          stockData[item.id] = variant.quantity; // Store stock quantity by item ID
+        }
+      } catch (error) {
+        console.error("Mahsulot ma'lumotlarini yuklashda xatolik:", error);
+      }
+    }
+    setStockInfo(stockData);
+  };
 
   const removeItem = (id) => {
     const updatedCart = cartItems.filter((item) => item.id !== id);
@@ -19,7 +45,9 @@ function Cart() {
 
   const increaseQuantity = (id) => {
     const updatedCart = cartItems.map((item) =>
-      item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+      item.id === id && item.quantity < (stockInfo[item.id] || Infinity)
+        ? { ...item, quantity: item.quantity + 1 }
+        : item
     );
     setCartItems(updatedCart);
     localStorage.setItem("cartItems", JSON.stringify(updatedCart));
@@ -42,18 +70,18 @@ function Cart() {
     );
   };
 
-  function clearCart() {
+  const clearCart = () => {
     localStorage.removeItem("cartItems");
     setCartItems([]);
     console.log("Savat tozalandi!");
-  }
+  };
 
   return (
     <div className="cart-container">
       <div className="cart_box">
         <h1>Savat</h1>
         <div className="clear">
-          <button onClick={() => clearCart()}>Savatni tozalash</button>
+          <button onClick={clearCart}>Savatni tozalash</button>
         </div>
       </div>
       {cartItems.length === 0 ? (
@@ -90,6 +118,9 @@ function Cart() {
                       <button
                         className="quantity-button"
                         onClick={() => increaseQuantity(item.id)}
+                        disabled={
+                          item.quantity >= (stockInfo[item.id] || Infinity)
+                        } // Disable if quantity exceeds stock
                       >
                         +
                       </button>
@@ -100,6 +131,12 @@ function Cart() {
                         <i className="bx bx-trash"></i> O'chirish
                       </button>
                     </div>
+                    {/* Display stock information */}
+                    {stockInfo[item.id] !== undefined && (
+                      <p className="stock-info">
+                        Qolgan miqdor: {stockInfo[item.id]} ta
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>

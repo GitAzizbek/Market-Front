@@ -20,6 +20,7 @@ function ProductDetail() {
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [selectedVariant, setSelectedVariant] = useState(null);
   const [cartItems, setCartItems] = useState([]);
   const [reviews, setReviews] = useState([]); // State for reviews
   const [loadingReviews, setLoadingReviews] = useState(true); // Loading state for reviews
@@ -65,6 +66,12 @@ function ProductDetail() {
 
     fetchReviews();
   }, [id]);
+
+  // Update selected variant when color or size changes
+  useEffect(() => {
+    const variant = getSelectedVariant();
+    setSelectedVariant(variant);
+  }, [selectedColor, selectedSize]);
 
   // Get selected variant based on color and size
   const getSelectedVariant = () => {
@@ -265,10 +272,23 @@ function ProductDetail() {
             <span className="quantity-value">{quantity}</span>
             <button
               className="quantity-button"
-              onClick={() => setQuantity((prev) => prev + 1)}
+              onClick={() =>
+                setQuantity((prev) =>
+                  selectedVariant && prev < selectedVariant.quantity
+                    ? prev + 1
+                    : prev
+                )
+              }
+              disabled={selectedVariant && quantity >= selectedVariant.quantity}
             >
               +
             </button>
+            {/* Display stock information */}
+            {selectedVariant && (
+              <p className="stock-info">
+                Mavjud: {selectedVariant.quantity} ta
+              </p>
+            )}
           </div>
         </div>
 
@@ -277,8 +297,6 @@ function ProductDetail() {
           Savatga qo'shish
         </button>
       </div>
-
-      {/* Reviews Section */}
     </div>
   );
 }
