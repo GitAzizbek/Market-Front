@@ -13,7 +13,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("personal");
-  const apiUrl = "https://admin.azizbekaliyev.uz";
+  const apiUrl = "https://admin.azizbekaliyev.uz/api/users/profile";
   const orders_url = "https://admin.azizbekaliyev.uz/api/orders/orders";
   const reviews_url = "https://admin.azizbekaliyev.uz/api/orders/comments"; // API for reviews
 
