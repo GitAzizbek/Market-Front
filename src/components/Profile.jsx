@@ -16,9 +16,7 @@ const tabs = [
 const Profile = () => {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
-  const success = toast.success(
-    "Profile malumotlari muvaffaqqiyatli yangilandi"
-  );
+
   const [profile, setProfile] = useState(null);
   const [orders, setOrders] = useState([]);
   const [reviews, setReviews] = useState([]);
@@ -166,8 +164,8 @@ const Profile = () => {
       const data = await response.json();
 
       if (response.ok) {
-        setProfile(data.data); // Yangilangan ma'lumotlarni state-ga saqlash
-        success();
+        setProfile(data.data);
+        toast.success("Profile malumotlari muvaffaqqiyatli yangilandi");
       } else {
         // alert(data.message || "Ma'lumotlarni yangilashda xatolik yuz berdi");
       }

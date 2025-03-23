@@ -9,10 +9,6 @@ import { ToastContainer, toast } from "react-toastify";
 import { FaStar } from "react-icons/fa";
 
 function ProductDetail() {
-  const notify = () => toast.warning("Iltimos rang va o'lcham tanlang");
-  const success = () =>
-    toast.success("Maxsulot muvaffaqqiyatli savatga qo'shildi");
-
   const { id } = useParams();
   const navigate = useNavigate();
   const apiUrl = "https://admin.azizbekaliyev.uz";
@@ -86,7 +82,7 @@ function ProductDetail() {
   const handleAddToCart = () => {
     const selectedVariant = getSelectedVariant();
     if (!selectedVariant) {
-      notify();
+      toast.warning("Iltimos rang va o'lcham tanlang");
       return;
     }
 
@@ -127,8 +123,8 @@ function ProductDetail() {
       : [...existingCart, newItem];
 
     localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-    setQuantity(1); // Reset quantity to 1 after adding to cart
-    success();
+    setQuantity(1);
+    toast.success("Maxsulot muvaffaqqiyatli savatga qo'shildi");
   };
 
   // Navigate to cart
@@ -157,7 +153,6 @@ function ProductDetail() {
 
   return (
     <div className="detail-container">
-      <ToastContainer />
       {/* Product Images */}
       <div className="detail-images-container">
         <Swiper

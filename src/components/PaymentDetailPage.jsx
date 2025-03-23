@@ -47,7 +47,6 @@ function PaymentDetailPage() {
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
-    alert("Nusxalandi: " + text);
   };
 
   const handleSubmit = async (e) => {
@@ -118,9 +117,7 @@ function PaymentDetailPage() {
         if (!uploadResponse.ok) {
           const uploadError = await uploadResponse.json();
           console.error("Fayl yuklashda xatolik:", uploadError);
-          alert(
-            `Fayl yuklash xatosi: ${uploadError.message || "Noma’lum xatolik"}`
-          );
+
           return;
         }
 
@@ -129,10 +126,7 @@ function PaymentDetailPage() {
         setTimeout(navigate("/success"), 1000);
         localStorage.removeItem("cartItems");
       }
-    } catch (error) {
-      console.error("Xatolik:", error);
-      alert("Xatolik yuz berdi: " + error.message);
-    }
+    } catch (error) {}
   };
 
   return (

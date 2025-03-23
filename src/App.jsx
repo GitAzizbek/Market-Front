@@ -12,11 +12,13 @@ import SuccessPage from "./components/PaymentConfirmation";
 import Profile from "./components/Profile";
 import ProductComments from "./components/Comments";
 import Catalog from "./components/Catalog";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
     <BrowserRouter>
       <div className="App">
+        <ToastContainer />
         <Routes>
           <Route path={"/"} Component={Home} />
           <Route path="/product/:id" Component={ProductDetail} />
