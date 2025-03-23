@@ -7,16 +7,27 @@ function Cart() {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
   const [stockInfo, setStockInfo] = useState({}); // State to store stock information
+  const [total, setTotal] = useState(0); // State to store the total price
 
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cartItems")) || [];
-    setCartItems(storedCart);
-    fetchStockInfo(storedCart); // Fetch stock information for items in the cart
+    fetchStockInfo(storedCart); // Fetch stock info and update cart
   }, []);
 
-  // Fetch stock information for each item in the cart
+  // Re-calculate total whenever cartItems changes
+  useEffect(() => {
+    const newTotal = cartItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
+    setTotal(newTotal);
+  }, [cartItems]);
+
+  // Fetch stock information and update cart
   const fetchStockInfo = async (cartItems) => {
     const stockData = {};
+    const updatedCart = [];
+
     for (const item of cartItems) {
       try {
         const response = await axios.get(
@@ -27,13 +38,19 @@ function Cart() {
           (color) =>
             color.color.name === item.color && color.size.size === item.size
         );
-        if (variant) {
-          stockData[item.id] = variant.quantity; // Store stock quantity by item ID
+
+        if (variant && variant.quantity > 0) {
+          stockData[item.id] = variant.quantity;
+          updatedCart.push(item); // Keep the item in the cart if it's still in stock
         }
       } catch (error) {
         console.error("Mahsulot ma'lumotlarini yuklashda xatolik:", error);
       }
     }
+
+    // Update cart and stock info
+    setCartItems(updatedCart);
+    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
     setStockInfo(stockData);
   };
 
@@ -61,13 +78,6 @@ function Cart() {
     );
     setCartItems(updatedCart);
     localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-  };
-
-  const calculateTotal = () => {
-    return cartItems.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
   };
 
   const clearCart = () => {
@@ -114,7 +124,8 @@ function Cart() {
                       >
                         -
                       </button>
-                      <span className="quantity-value">{item.quantity}</span>
+                      <span className="quantity-value">{item.quantity}</span>{" "}
+                      {/* Display item.quantity */}
                       <button
                         className="quantity-button"
                         onClick={() => increaseQuantity(item.id)}
@@ -131,7 +142,6 @@ function Cart() {
                         <i className="bx bx-trash"></i> O'chirish
                       </button>
                     </div>
-                    {/* Display stock information */}
                     {stockInfo[item.id] !== undefined && (
                       <p className="stock-info">
                         Qolgan miqdor: {stockInfo[item.id]} ta
@@ -143,7 +153,8 @@ function Cart() {
             ))}
           </div>
           <div className="cart-summary">
-            <h2>{parseInt(calculateTotal()).toLocaleString()} UZS</h2>
+            <h2>{parseInt(total).toLocaleString()} UZS</h2>{" "}
+            {/* Display dynamic total */}
             <button
               className="checkout-button"
               onClick={() => navigate("/payment-processing")}

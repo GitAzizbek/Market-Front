@@ -54,42 +54,43 @@ function CardList({ products }) {
           <div class="line"></div>
         </div>
       </div>
-      {products.map((item) => (
-        <Link to={`/product/${item.id}`} key={item.id} className="card">
-          <div className="card_top">
-            <Swiper
-              scrollbar={{ hide: false }}
-              modules={[Scrollbar]}
-              className="mySwiper"
-            >
-              {item.images && item.images.length > 0 ? (
-                item.images.map((image) => (
-                  <SwiperSlide key={image.id}>
+      {loading == false &&
+        products.map((item) => (
+          <Link to={`/product/${item.id}`} key={item.id} className="card">
+            <div className="card_top">
+              <Swiper
+                scrollbar={{ hide: false }}
+                modules={[Scrollbar]}
+                className="mySwiper"
+              >
+                {item.images && item.images.length > 0 ? (
+                  item.images.map((image) => (
+                    <SwiperSlide key={image.id}>
+                      <div className="img_box">
+                        <img src={`${apiUrl}/${image.image}`} alt={item.name} />
+                      </div>
+                    </SwiperSlide>
+                  ))
+                ) : (
+                  <SwiperSlide>
                     <div className="img_box">
-                      <img src={`${apiUrl}/${image.image}`} alt={item.name} />
+                      <p>Rasm mavjud emas</p>
                     </div>
                   </SwiperSlide>
-                ))
-              ) : (
-                <SwiperSlide>
-                  <div className="img_box">
-                    <p>Rasm mavjud emas</p>
-                  </div>
-                </SwiperSlide>
-              )}
-            </Swiper>
-          </div>
-          <div className="card_bottom">
-            <h6 className="card_title">{item.name}</h6>
-            <p className="card_description">
-              {item.description.slice(0, 30)}...
-            </p>
-            <p className="card_price">
-              {parseInt(item.price).toLocaleString("en-US")} UZS
-            </p>
-          </div>
-        </Link>
-      ))}
+                )}
+              </Swiper>
+            </div>
+            <div className="card_bottom">
+              <h6 className="card_title">{item.name}</h6>
+              <p className="card_description">
+                {item.description.slice(0, 30)}...
+              </p>
+              <p className="card_price">
+                {parseInt(item.price).toLocaleString("en-US")} UZS
+              </p>
+            </div>
+          </Link>
+        ))}
     </div>
   );
 }

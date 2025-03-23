@@ -102,7 +102,23 @@ function ProductDetail() {
     };
 
     const existingCart = JSON.parse(localStorage.getItem("cartItems")) || [];
-    const updatedCart = existingCart.some((item) => item.id === newItem.id)
+    const existingItem = existingCart.find((item) => item.id === newItem.id);
+
+    // Calculate the total quantity if the item already exists in the cart
+    const totalQuantity = existingItem
+      ? existingItem.quantity + quantity
+      : quantity;
+
+    // Check if the total quantity exceeds the available stock
+    if (totalQuantity > selectedVariant.quantity) {
+      toast.warning(
+        `Faqat ${selectedVariant.quantity} ta mahsulot mavjud. Menimcha savatingizda allaqachon mavjud`
+      );
+      return;
+    }
+
+    // Update the cart
+    const updatedCart = existingItem
       ? existingCart.map((item) =>
           item.id === newItem.id
             ? { ...item, quantity: item.quantity + quantity }
@@ -111,6 +127,7 @@ function ProductDetail() {
       : [...existingCart, newItem];
 
     localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+    setQuantity(1); // Reset quantity to 1 after adding to cart
     success();
   };
 
