@@ -165,7 +165,7 @@ const Profile = () => {
 
       if (response.ok) {
         setProfile(data.data);
-        toast.success("Profile malumotlari muvaffaqqiyatli yangilandi");
+        // toast.success("Profile malumotlari muvaffaqqiyatli yangilandi");
       } else {
         // alert(data.message || "Ma'lumotlarni yangilashda xatolik yuz berdi");
       }
