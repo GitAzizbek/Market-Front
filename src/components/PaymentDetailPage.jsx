@@ -31,6 +31,18 @@ function PaymentDetailPage() {
     );
   };
 
+  const isFormValid = () => {
+    // Yetkazib berish turi tanlanganligini tekshirish
+    if (!cardNumber) return false;
+
+    // To'lov turi tanlanganligini tekshirish
+    if (!fullName) return false;
+
+    if (!file) return false;
+
+    return true;
+  };
+
   const handleCardInputChange = (e) => {
     let value = e.target.value.replace(/\D/g, ""); // Faqat raqamlarni qabul qilish
     value = value.replace(/(\d{4})/g, "$1 ").trim(); // Har 4 xonadan keyin bo'sh joy qo'shish
@@ -177,7 +189,12 @@ function PaymentDetailPage() {
           onChange={handleFileChange}
           required
         />
-        <input type="submit" value="Pulni to'ladim" />
+        <input
+          disabled={!isFormValid()}
+          type="submit"
+          value="Pulni to'ladim"
+          className={`pay-button ${!isFormValid() ? "disabled-btn" : ""}`}
+        />
       </form>
     </div>
   );

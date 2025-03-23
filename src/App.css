@@ -392,6 +392,23 @@ button.active {
   background-color: #d35400;
 }
 
+.detail-buy-button.disabled-btn {
+  background-color: #0532fdbb; /* Gray background */
+  cursor: not-allowed; /* Change cursor to indicate disabled state */
+  opacity: 0.7; /* Reduce opacity */
+}
+
+.submit-button.disabled-btn {
+  background-color: #0532fdbb; /* Gray background */
+  cursor: not-allowed; /* Change cursor to indicate disabled state */
+  opacity: 0.7; /* Reduce opacity */
+}
+
+.pay-button.disabled-btn {
+  background-color: #0532fdbb; /* Gray background */
+  cursor: not-allowed; /* Change cursor to indicate disabled state */
+  opacity: 0.7; /* Reduce opacity */
+}
 /* Yuklanayotgan payt */
 .detail-loading {
   text-align: center;

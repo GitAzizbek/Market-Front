@@ -239,6 +239,7 @@ function ProductDetail() {
         <div className="detail-options">
           <h3>Rangni tanlang:</h3>
           <div className="color-options">
+            {uniqueColors.length == 0 && "Qolmagan"}
             {uniqueColors.map((color) => (
               <button
                 key={color.id}
@@ -257,6 +258,7 @@ function ProductDetail() {
         <div className="detail-options">
           <h3>O'lchamni tanlang:</h3>
           <div className="size-options">
+            {uniqueSizes.length == 0 && "Qolmagan"}
             {uniqueSizes.map((size) => (
               <button
                 key={size}
@@ -305,7 +307,13 @@ function ProductDetail() {
         </div>
 
         {/* Add to Cart Button */}
-        <button className="detail-buy-button" onClick={handleAddToCart}>
+        <button
+          disabled={!selectedVariant} // Disable if no variant is selected
+          className={`detail-buy-button ${
+            !selectedVariant ? "disabled-btn" : ""
+          }`}
+          onClick={handleAddToCart}
+        >
           Savatga qo'shish
         </button>
       </div>

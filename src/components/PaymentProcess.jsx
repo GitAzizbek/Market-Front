@@ -10,6 +10,23 @@ const PaymentProcessing = () => {
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [useAutomaticAddress, setUseAutomaticAddress] = useState(false);
 
+  const isFormValid = () => {
+    // Yetkazib berish turi tanlanganligini tekshirish
+    if (!selectedDelivery) return false;
+
+    // Agar Yetkazib berish tanlangan bo'lsa, manzil kiritilganligini tekshirish
+    if (
+      selectedDelivery.method_name === "Yetkazib berish" &&
+      !deliveryAddress.trim()
+    ) {
+      return false;
+    }
+
+    // To'lov turi tanlanganligini tekshirish
+    if (!selectedPayment) return false;
+
+    return true;
+  };
   useEffect(() => {
     // Fetch delivery methods
     fetch("https://admin.azizbekaliyev.uz/api/orders/delivery-method")
@@ -35,9 +52,6 @@ const PaymentProcessing = () => {
           (method) => method.status === "active"
         );
         setPaymentMethods(activePayments);
-        if (activePayments.length > 0) {
-          setSelectedPayment(activePayments[0]);
-        }
       })
       .catch((err) => console.error("To'lov usullarini olishda xatolik:", err));
   }, []);
@@ -237,7 +251,11 @@ const PaymentProcessing = () => {
 
       {/* Buyurtmani rasmiylashtirish tugmasi */}
       <div className="form-section">
-        <button className="submit-button" onClick={handleSubmit}>
+        <button
+          className={`submit-button ${!isFormValid() ? "disabled-btn" : ""}`}
+          onClick={handleSubmit}
+          disabled={!isFormValid()} // Tugmani faollashtirish shartlari
+        >
           Buyurtmani Rasmiylashtirish
         </button>
       </div>
